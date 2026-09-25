@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Promo</title>
+<style>
+  /* BRAND: edit these tokens */
+  :root { --brand:#2E1A6E; --brand2:#5A4BB0; --accent:#B8002A; --accent-dark:#7E001D; --hi:#F7D417; --muted:#6B6785; }
+  html, body { margin:0; padding:0; background:#fff; overflow:hidden; }
+  #stage { position:relative; width:1920px; height:1080px; overflow:hidden; background:#fff;
+           font-family:"Avenir Next", "Avenir", system-ui, sans-serif; }
+  canvas#gl { position:absolute; inset:0; width:100%; height:100%; }
+
+  /* caption card */
+  #cap { position:absolute; top:44px; left:50%; transform-origin:50% 0; opacity:0;
+         display:flex; align-items:center; gap:26px; padding:22px 40px 22px 24px;
+         background:#fff; border-radius:26px; max-width:88%;
+         box-shadow:0 18px 40px rgba(30,27,51,.16), 0 2px 0 rgba(30,27,51,.06);
+         border:2px solid #EEEAF8; white-space:nowrap; will-change:transform,opacity; }
+  #cap .num { width:74px; height:74px; border-radius:50%; background:var(--accent); color:#fff;
+              font-weight:800; font-size:40px; display:flex; align-items:center; justify-content:center;
+              box-shadow:inset 0 -5px 0 rgba(0,0,0,.18); flex:none; }
+  #cap .num img { width:62px; height:62px; object-fit:contain; }
+  #cap .num.logo { background:#fff; box-shadow:none; }
+  #cap .t1 .w, #o-tag .w { display:inline-block; }
+  #cap .t1 { font-size:44px; font-weight:800; color:var(--brand); letter-spacing:-.5px; line-height:1.05; }
+  #cap .t2 { font-size:24px; font-weight:500; color:var(--muted); margin-top:6px; }
+  #cap .bar { position:absolute; left:24px; right:24px; bottom:-8px; height:8px; border-radius:0 0 8px 8px;
+              background:linear-gradient(90deg,var(--brand),var(--accent) 60%,var(--hi)); }
+
+  /* outro */
+  #veil { position:absolute; inset:0; opacity:0;
+          background:radial-gradient(ellipse at 50% 46%, rgba(255,255,255,.96) 0%, rgba(255,255,255,.9) 38%, rgba(255,255,255,.55) 100%); }
+  #outro { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; }
+  #outro > * { will-change:transform,opacity; opacity:0; }
+  #o-logo { width:230px; height:230px; object-fit:contain; filter:drop-shadow(0 16px 24px rgba(30,27,51,.18)); }
+  #o-title { font-size:92px; font-weight:800; color:var(--brand); letter-spacing:-2px; margin-top:18px; line-height:1; }
+  #o-title span { color:var(--accent); }
+  #o-sub { font-size:28px; font-weight:600; color:var(--muted); margin-top:14px; letter-spacing:.5px; }
+  #o-tag { font-size:46px; font-weight:700; color:var(--brand); margin-top:30px; position:relative; }
+  #o-tag::after { content:""; position:absolute; left:8%; right:8%; bottom:-10px; height:10px; border-radius:6px;
+                  background:var(--hi); opacity:.85; z-index:-1; }
+  #o-btn { margin-top:46px; padding:26px 64px; border-radius:999px; background:var(--accent); color:#fff;
+           font-size:40px; font-weight:800; letter-spacing:.3px; position:relative;
+           box-shadow:0 14px 0 var(--accent-dark), 0 26px 40px rgba(0,0,0,.2); }
+  #o-btn .ring { position:absolute; inset:-6px; border-radius:999px; border:5px solid var(--hi); opacity:0; }
+  #o-url { margin-top:40px; font-size:28px; font-weight:600; color:var(--brand); opacity:.8; }
+  #cursor { position:absolute; left:0; top:0; width:54px; height:54px; opacity:0; will-change:transform,opacity; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <canvas id="gl"></canvas>
+  <div id="cap"><div class="num"></div><div><div class="t1"></div><div class="t2"></div></div><div class="bar"></div></div>
+  <div id="veil"></div>
+  <!-- OUTRO: edit copy here -->
+  <div id="outro">
+    <img id="o-logo" src="assets/logo.png">
+    <div id="o-title">Your<span>App</span></div>
+    <div id="o-sub">ONE-LINE WHAT IT IS</div>
+    <div id="o-tag">Your tagline goes here</div>
+    <div id="o-btn"><span class="ring"></span>Try now &nbsp;→</div>
+    <div id="o-url">yourapp.com</div>
+  </div>
+  <svg id="cursor" viewBox="0 0 24 24"><path d="M4 2l15 9-6.5 1.6L16 20l-3 1.4-3.4-7.3L4 18z" fill="#1E1B33" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/></svg>
+</div>
+<script type="importmap">{ "imports": { "three": "/node_modules/three/build/three.module.js", "three/addons/": "/node_modules/three/examples/jsm/" } }</script>
+<script type="module" src="scene.js"></script>
+</body>
+</html>
