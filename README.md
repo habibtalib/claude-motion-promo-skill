@@ -65,12 +65,12 @@ Claude then:
 
 ```mermaid
 flowchart LR
-  A[scene.js<br/>Three.js diorama<br/>renderAt&#40;t&#41;] -->|headless Chromium<br/>1 screenshot per frame| B[render.mjs]
-  B -->|PNG pipe| C[ffmpeg<br/>h264 + vignette]
-  A -->|events.json<br/>every pop, stamp, cut| D[audio.py<br/>numpy synth]
-  C --> E[make.sh<br/>mux + loudnorm -14 LUFS<br/>contact sheet + checks]
+  A["scene.js<br/>Three.js diorama<br/>renderAt(t)"] -->|"headless Chromium, 1 screenshot per frame"| B["render.mjs"]
+  B -->|"PNG pipe"| C["ffmpeg<br/>h264 + vignette"]
+  A -->|"events.json: every pop, stamp, cut"| D["audio.py<br/>numpy synth"]
+  C --> E["make.sh<br/>mux + loudnorm -14 LUFS<br/>contact sheet + checks"]
   D --> E
-  E --> F[(promo.mp4)]
+  E --> F[("promo.mp4")]
 ```
 
 Because each frame is a pure function of time, the scene records **sound events** as it is built: `pop()` emits a pop, `cameraRig` emits a whoosh at each cut, and `captions` emits a swish. `audio.py` then places every SFX on exactly the right sample. The music grid shares the scene's `BPM`, so camera cuts can land on the beat.
