@@ -318,8 +318,9 @@ for e in EV:
 
 mL, mR = reverb(music.L, music.R, 2.0, 0.55, 0.3)
 sL, sR = reverb(sfx.L, sfx.R, 1.2, 0.3, 0.18)
-L = mL * 0.55 + sL * 0.85
-R = mR * 0.55 + sR * 0.85
+MUSIC = float(__import__('os').environ.get('MUSIC', '1'))  # MUSIC=0 → SFX only (user brings a track / wants no bed)
+L = mL * 0.55 * MUSIC + sL * 0.85
+R = mR * 0.55 * MUSIC + sR * 0.85
 tt = np.arange(N) / SR
 fade = np.clip(tt / 0.15, 0, 1) * np.clip((DUR - tt) / 1.2, 0, 1)
 L, R = L * fade, R * fade

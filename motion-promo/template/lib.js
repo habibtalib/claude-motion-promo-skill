@@ -344,6 +344,11 @@ export function outro(items, { veil = [0, 0], cta = 'o-btn', click = null, words
 
 /** wire everything up: fn(t) runs after registered anims; exposes window.renderAt / EVENTS / META (bpm → audio.py) */
 export function run({ renderer, scene, camera, W, H }, dur, fn, { bpm = 100 } = {}) {
+  // ?plate=1 (render.mjs PLATE=1): diorama only — no caption card, outro or cursor — for use as footage in the
+  // motion-video engine, which then adds captions/narration/sound on top.
+  if (new URLSearchParams(location.search).get('plate') === '1') {
+    for (const id of ['cap', 'veil', 'outro', 'cursor']) { const el = document.getElementById(id); if (el) { el.style.display = 'none'; } }
+  }
   window.renderAt = t => { for (const a of anims) { a(t); } fn(t); renderer.render(scene, camera); };
   window.EVENTS = EVENTS.sort((a, b) => a.t - b.t);
   window.META = { W, H, dur, bpm };

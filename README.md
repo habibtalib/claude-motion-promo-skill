@@ -4,7 +4,7 @@
 
 # motion-promo
 
-**A Claude Code skill that turns one prompt into a polished 3D isometric promo video, with a soundtrack.**
+**A Claude Code skill that turns one prompt into a directed motion video: 3D isometric promos, explainers, narrated tutorials, kinetic type and music-synced reels.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-6C4CF1.svg)](LICENSE)
 [![Claude Code Skill](https://img.shields.io/badge/Claude%20Code-Skill-1B1F3B)](https://docs.anthropic.com/en/docs/claude-code)
@@ -31,17 +31,29 @@ When you ask an AI to "make a promo video" you usually get flat slides and linea
 - 🔊 **A synthesized soundtrack**: an uplifting music bed plus SFX (pops, typing, stamps, chimes, coins, whooshes) synced to each event, normalised to -14 LUFS
 - 🎯 **Frame-accurate and deterministic.** Each frame is a pure function of `t`, so there are no dropped frames and no timeouts, at any length
 
+## Two engines, one skill
+
+| Engine | Best for |
+|---|---|
+| 🎲 **Diorama** (Three.js, this repo) | A 3D isometric toy-world promo like the demo above: a grey disc, toon props and characters, your app UI on a laptop, an orbiting camera, caption cards, and a synthesized music bed plus SFX |
+| 🎞️ **motion-video** (vendored from [farhan-syah/motion-video-skill](https://github.com/farhan-syah/motion-video-skill), MIT) | Everything else: explainers, tutorials, UI rebuilt as live HTML, kinetic typography, data stories, maps, footage, portrait reels, **local TTS narration with word-synced captions**, cuts on the beat of your music, and a per-scene lint (text size, contrast, hold time) plus a sound-cue audit |
+| 🔀 **Hybrid** | The diorama look plus narration and captions. The diorama renders as a clean plate (`PLATE=1`), and motion-video then composes it as footage |
+
+Claude picks the engine from your request. Both share one workflow: check the machine, gather facts with sources, ask at most five questions (each with a default), draft three concepts, pick one, build, check, render, and review.
+
 ## Install
 
 ```bash
 git clone https://github.com/habibtalib/claude-motion-promo-skill.git
 mkdir -p ~/.claude/skills
 cp -r claude-motion-promo-skill/motion-promo ~/.claude/skills/
+cd ~/.claude/skills/motion-promo/motion-video/scripts && (bun install || npm install)   # motion-video engine
+node ~/.claude/skills/motion-promo/motion-video/scripts/video.mjs doctor               # checks your machine
 ```
 
 For a single project only, copy it into `<repo>/.claude/skills/` instead.
 
-**Requirements:** Node 18+, `ffmpeg`, Python 3 with `numpy` (and `Pillow` for colour sampling), and Playwright Chromium (`npx playwright install chromium`). The macOS system font "Avenir Next" is used by default. On Linux, drop a `.woff2` into `assets/` (see `SKILL.md`).
+**Requirements:** Node 20+, `ffmpeg`, Python 3 with `numpy` (and `Pillow` for colour sampling), and Playwright Chromium (`npx playwright install chromium`). The macOS system font "Avenir Next" is used by default. On Linux, drop a `.woff2` into `assets/` (see `SKILL.md`). Narration is optional: the first `speak` or `transcribe` installs a local speech runtime of about 500 MB. Kokoro TTS covers English; other languages use your own recording or an MMS-TTS model.
 
 ## Use
 
@@ -133,12 +145,16 @@ chime on success, and a whoosh on every camera move.
 ```
 motion-promo/
 ├── SKILL.md                 # workflow, design rules, pre-delivery checklist, gotchas
-├── template/                # copy to start: lib.js, scene.js, index.html, render.mjs, audio.py, make.sh
+├── template/                # Diorama engine: lib.js, scene.js, index.html, render.mjs, audio.py, make.sh
+├── motion-video/            # vendored motion-video engine (MIT), see UPSTREAM.md for version + local patches
+├── scripts/                 # sync-motion-video.sh: re-vendor from upstream and re-apply patches
 └── examples/skill-promo/    # the demo video above
 media/                       # demo.mp4, demo.gif, contact sheet, logo
 ```
 
 ## Credits
+
+- The **motion-video** engine is by [Farhan Syah](https://github.com/farhan-syah/motion-video-skill) (MIT), vendored at 1.1.0 with one local fix: its `check` crashed on Chrome 13x+, which reports `color-mix()` colours as `oklab()`.
 
 - Motion-craft rules (stagger, 3-property entrances, fast exits, holds, early SFX, verify every render) are adapted from [haidrrrry/claude-remotion-skill](https://github.com/haidrrrry/claude-remotion-skill). It pairs well with this skill for 2D kinetic typography and for adding captions to existing footage.
 - Built on [Three.js](https://threejs.org), [Playwright](https://playwright.dev), [ffmpeg](https://ffmpeg.org) and [NumPy](https://numpy.org).

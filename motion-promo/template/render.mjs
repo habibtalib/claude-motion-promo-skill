@@ -2,6 +2,7 @@
 // usage:  node render.mjs preview 1,4.5,10     → preview/f_<t>.png (fast visual check)
 //         node render.mjs full [fps]           → out/video_noaudio.mp4 (+ events.json for audio.py)
 //         GRAIN=0 VIGNETTE=0 node render.mjs full   → no texture pass
+//         PLATE=1 VIGNETTE=0 node render.mjs full   → diorama plate only (no captions/outro) for the motion-video engine
 import { chromium } from 'playwright';
 import http from 'node:http';
 import fs from 'node:fs';
@@ -28,13 +29,13 @@ const hook = p => {
   p.on('pageerror', e => console.log('[pageerror]', e.message));
 };
 hook(page);
-await page.goto(`http://localhost:${port}/index.html`);
+await page.goto(`http://localhost:${port}/index.html${process.env.PLATE === '1' ? '?plate=1' : ''}`);
 await page.waitForFunction(() => window.READY === true, null, { timeout: 120000 });
 const meta = await page.evaluate(() => window.META);
 if (meta.W !== 1920 || meta.H !== 1080) {
   await page.close();
   page = await browser.newPage({ viewport: { width: meta.W, height: meta.H } }); hook(page);
-  await page.goto(`http://localhost:${port}/index.html`);
+  await page.goto(`http://localhost:${port}/index.html${process.env.PLATE === '1' ? '?plate=1' : ''}`);
   await page.waitForFunction(() => window.READY === true, null, { timeout: 120000 });
 }
 const events = await page.evaluate(() => window.EVENTS);
